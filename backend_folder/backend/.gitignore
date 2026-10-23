@@ -31,3 +31,5 @@ build/
 
 ### VS Code ###
 .vscode/
+## não subir pro git ## 
+backend_folder/backend/src/main/resources/application-local.properties
