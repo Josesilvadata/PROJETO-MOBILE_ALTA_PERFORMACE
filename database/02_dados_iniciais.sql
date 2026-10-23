@@ -36,11 +36,11 @@ SELECT l.id, d.id, dados.nivel
 FROM (
     VALUES
         ('Local demonstrativo A', 'Ruído', 'baixo'),
-        ('Local demonstrativo A', 'Iluminação', 'médio'),
+        ('Local demonstrativo A', 'Iluminação', 'medio'),
         ('Local demonstrativo A', 'Movimento de pessoas', 'baixo'),
         ('Local demonstrativo B', 'Ruído', 'alto'),
         ('Local demonstrativo B', 'Iluminação', 'alto'),
-        ('Local demonstrativo B', 'Movimento de pessoas', 'médio')
+        ('Local demonstrativo B', 'Movimento de pessoas', 'medio')
 ) AS dados(local_nome, dimensao_nome, nivel)
 JOIN locais l ON l.nome = dados.local_nome
 JOIN dimensoes_sensoriais d ON d.nome = dados.dimensao_nome
