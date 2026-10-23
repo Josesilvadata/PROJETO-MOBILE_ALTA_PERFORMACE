@@ -1,9 +1,11 @@
 package com.projeto.backend.repository;
 
-import com.projeto.backend.model.Cliente;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
-public class ClienteRepository {
+import com.projeto.backend.model.Cliente;
 
+public interface ClienteRepository extends JpaRepository<Cliente, Long> {
+    Optional<Cliente> findByEmail(String email);
 }
