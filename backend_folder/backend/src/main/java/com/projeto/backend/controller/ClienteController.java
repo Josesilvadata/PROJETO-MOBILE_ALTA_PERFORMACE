@@ -41,7 +41,7 @@ public class ClienteController {
         Cliente cliente = new Cliente();
         cliente.setNome(req.nome());
         cliente.setEmail(req.email());
-        cliente.setSenha(encoder.encode(req.senha()));
+        cliente.setSenhaHash(encoder.encode(req.senha()));        
         repository.save(cliente);
 
         return ResponseEntity.status(201).body(Map.of("mensagem", "Cliente cadastrado com sucesso"));
@@ -51,7 +51,7 @@ public class ClienteController {
     public ResponseEntity<?> login(@RequestBody AuthRequest req) {
         Optional<Cliente> cliente = repository.findByEmail(req.email());
 
-        if (cliente.isEmpty() || !encoder.matches(req.senha(), cliente.get().getSenha())) {
+        if (cliente.isEmpty() || !encoder.matches(req.senha(), cliente.get().getSenhaHash())) {
             return ResponseEntity.status(401).body(Map.of("erro", "Email ou senha inválidos"));
         }
 
