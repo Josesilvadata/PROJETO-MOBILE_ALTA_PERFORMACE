@@ -1,4 +1,3 @@
 package com.projeto.backend.dto;
-public class AuthRequest {
 
-}
+public record AuthRequest(String nome, String email, String senha) {}
