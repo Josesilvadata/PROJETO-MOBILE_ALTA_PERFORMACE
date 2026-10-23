@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "clientes") // ajuste para o nome real da tabela
+@Table(name = "usuarios")
 public class Cliente {
 
     @Id
@@ -17,10 +17,10 @@ public class Cliente {
 
     private String nome;
 
-    @Column(unique = true)
     private String email;
 
-    private String senha;
+    @Column(name = "senha_hash")
+    private String senhaHash;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -31,6 +31,6 @@ public class Cliente {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public String getSenha() { return senha; }
-    public void setSenha(String senha) { this.senha = senha; }
+    public String getSenhaHash() { return senhaHash; }
+    public void setSenhaHash(String senhaHash) { this.senhaHash = senhaHash; }
 }
