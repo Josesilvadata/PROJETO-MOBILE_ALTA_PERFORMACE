@@ -17,7 +17,6 @@ import com.projeto.backend.repository.ClienteRepository;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*") // libera o front-end React em desenvolvimento
 public class ClienteController {
 
     private final ClienteRepository repository;
