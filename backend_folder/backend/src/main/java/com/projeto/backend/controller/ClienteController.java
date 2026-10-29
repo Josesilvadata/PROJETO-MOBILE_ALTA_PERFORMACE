@@ -5,11 +5,14 @@ import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import com.projeto.backend.security.JwtService;
 
 import com.projeto.backend.dto.AuthRequest;
 import com.projeto.backend.model.Cliente;
@@ -20,10 +23,15 @@ import com.projeto.backend.repository.ClienteRepository;
 public class ClienteController {
 
     private final ClienteRepository repository;
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder encoder;
+    private final JwtService jwtService;
 
-    public ClienteController(ClienteRepository repository) {
+    public ClienteController(ClienteRepository repository,
+                             BCryptPasswordEncoder encoder,
+                             JwtService jwtService) {
         this.repository = repository;
+        this.encoder = encoder;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/cadastro")
@@ -54,10 +62,24 @@ public class ClienteController {
             return ResponseEntity.status(401).body(Map.of("erro", "Email ou senha inválidos"));
         }
 
-        return ResponseEntity.ok(Map.of(
-                "mensagem", "Login realizado com sucesso",
-                "id", cliente.get().getId(),
-                "nome", cliente.get().getNome()
+       return ResponseEntity.ok(Map.of(
+        "mensagem", "Login realizado com sucesso",
+        "token", jwtService.gerarToken(cliente.get()),
+        "id", cliente.get().getId(),
+        "nome", cliente.get().getNome()
         ));
     }
-}
+    @GetMapping("/me")
+    public ResponseEntity<?> me(Authentication auth) {
+        Optional<Cliente> c = repository.findByEmail(auth.getName());
+        if (c.isEmpty()) {
+            return ResponseEntity.status(404).body(Map.of("erro", "Usuário não encontrado"));
+        }
+        return ResponseEntity.ok(Map.of(
+                "id", c.get().getId(),
+                "nome", c.get().getNome(),
+                "email", c.get().getEmail()
+        ));
+    }
+}  
+
