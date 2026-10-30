@@ -57,6 +57,55 @@ Os scripts ficam na pasta `database/`. O modelo tem 6 tabelas:
 | `local_niveis_sensoriais` | Nível de cada dimensão em cada local: `baixo`, `medio` ou `alto` |
 | `favoritos` | Locais salvos por cada usuário |
 
+### Ambiente Docker
+
+O banco de dados utiliza Docker com PostgreSQL 17 e PostGIS 3.5.
+
+**Pré-requisitos:**
+- Docker Desktop instalado e em execução.
+
+**Configuração:**
+
+1. Copie o arquivo `.env.example` e renomeie a cópia para `.env`.
+2. Configure a senha do banco no arquivo `.env`.
+3. Abra o terminal na pasta raiz do projeto.
+
+**Iniciar o banco:**
+
+```bash
+docker compose up -d
+```
+
+**Verificar se está funcionando:**
+
+```bash
+docker compose ps
+```
+
+**Executar os scripts SQL pela primeira vez:**
+
+```bash
+docker compose cp database/01_schema.sql banco:/tmp/01_schema.sql
+docker compose exec banco psql -U projeto_dev -d projeto_mobile -f /tmp/01_schema.sql
+
+docker compose cp database/02_dados_iniciais.sql banco:/tmp/02_dados_iniciais.sql
+docker compose exec banco psql -U projeto_dev -d projeto_mobile -f /tmp/02_dados_iniciais.sql
+```
+
+**Executar consultas de teste:**
+
+```bash
+docker compose cp database/03_consultas_teste.sql banco:/tmp/03_consultas_teste.sql
+docker compose exec banco psql -U projeto_dev -d projeto_mobile -f /tmp/03_consultas_teste.sql
+```
+
+**Parar o banco:**
+
+```bash
+docker compose stop
+```
+
+Os dados são armazenados no volume Docker `dados_postgres` e permanecem salvos após a parada ou reinicialização do container.
 ---
 
 ## Como rodar o back-end
