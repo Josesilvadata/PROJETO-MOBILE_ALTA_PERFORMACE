@@ -1,0 +1,3 @@
+:root { --blue: #1b6ca8; --dark: #14557f; --soft: #f3f8fb; --line: #d5e4ee; color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #fff; color: #12303f; font-family: "Segoe UI", Arial, sans-serif; }
