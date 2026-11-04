@@ -2,13 +2,30 @@ import { useState } from 'react'
 import './App.css'
 import MapaCalmo from './MapaCalmo'
 
-function Form({ titulo, campos, botao, voltar }) {
+const API = 'http://localhost:8080'
+
+function Form({ titulo, campos, botao, voltar, endpoint }) {
   const [msg, setMsg] = useState('')
-  const enviar = (e) => { e.preventDefault(); setMsg('mensagem genérica aq') }
+  const enviar = async (e) => {
+    e.preventDefault()
+    const dados = Object.fromEntries(new FormData(e.target))
+    try {
+      const r = await fetch(API + endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados),
+      })
+      setMsg(r.ok ? 'Sucesso!' : 'Erro ' + r.status)
+    } catch {
+      setMsg('Não consegui falar com o servidor.')
+    }
+  }
   return (
     <form className="card" onSubmit={enviar}>
       <h1>{titulo}</h1>
-      {campos.map(([nome, tipo]) => <input key={nome} type={tipo} placeholder={nome} required />)}
+      {campos.map(([chave, tipo, label]) => (
+        <input key={chave} name={chave} type={tipo} placeholder={label} required />
+      ))}
       <button className="btn">{botao}</button>
       <p className="msg">{msg}</p>
       <button type="button" className="link" onClick={voltar}>Voltar</button>
@@ -43,12 +60,12 @@ export default function App() {
           </div>
         )}
         {tela === 'login' && (
-          <Form titulo="Login" botao="Entrar" voltar={voltar}
-            campos={[['E-mail', 'email'], ['Senha', 'password']]} />
+          <Form titulo="Login" botao="Entrar" voltar={voltar} endpoint="/api/login"
+            campos={[['email', 'email', 'E-mail'], ['senha', 'password', 'Senha']]} />
         )}
         {tela === 'cadastro' && (
-          <Form titulo="Cadastro" botao="Cadastrar" voltar={voltar}
-            campos={[['Nome', 'text'], ['E-mail', 'email'], ['Senha', 'password']]} />
+          <Form titulo="Cadastro" botao="Cadastrar" voltar={voltar} endpoint="/api/cadastro"
+            campos={[['nome', 'text', 'Nome'], ['email', 'email', 'E-mail'], ['senha', 'password', 'Senha']]} />
         )}
         {tela === 'mapa' && <MapaCalmo />}
       </main>
