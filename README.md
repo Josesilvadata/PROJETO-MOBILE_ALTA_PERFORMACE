@@ -22,13 +22,13 @@ Aplicação mobile com **front-end em React** e **back-end em Spring Boot**, int
 
 ## Tecnologias
 
-| Camada | Tecnologia |
-|---|---|
-| Front-end | React |
-| Back-end | Java 17+ (testado com Java 21), Spring Boot 4.1.1, Spring Web MVC, Spring Data JPA |
-| Segurança | Spring Security (configuração liberada) e BCrypt para senhas |
-| Banco de dados | PostgreSQL 17 com extensão PostGIS |
-| Build | Maven (Maven Wrapper incluso) |
+| Camada         | Tecnologia                                                                         |
+| -------------- | ---------------------------------------------------------------------------------- |
+| Front-end      | React                                                                              |
+| Back-end       | Java 17+ (testado com Java 21), Spring Boot 4.1.1, Spring Web MVC, Spring Data JPA |
+| Segurança      | Spring Security (configuração liberada) e BCrypt para senhas                       |
+| Banco de dados | PostgreSQL 17 com extensão PostGIS                                                 |
+| Build          | Maven (Maven Wrapper incluso)                                                      |
 
 ---
 
@@ -48,20 +48,21 @@ PROJETO-MOBILE_ALTA_PERFORMACE/
 
 Os scripts ficam na pasta `database/`. O modelo tem 6 tabelas:
 
-| Tabela | Descrição |
-|---|---|
-| `usuarios` | Contas dos usuários (nome, e-mail único e `senha_hash`) |
-| `dimensoes_sensoriais` | Tipos de estímulo avaliados: Ruído, Iluminação, Movimento de pessoas |
-| `usuario_sensibilidades` | Quais dimensões cada usuário marcou como sensíveis |
-| `locais` | Locais cadastrados, com coordenadas geográficas (`geometry(Point, 4326)`) |
-| `local_niveis_sensoriais` | Nível de cada dimensão em cada local: `baixo`, `medio` ou `alto` |
-| `favoritos` | Locais salvos por cada usuário |
+| Tabela                    | Descrição                                                                 |
+| ------------------------- | ------------------------------------------------------------------------- |
+| `usuarios`                | Contas dos usuários (nome, e-mail único e `senha_hash`)                   |
+| `dimensoes_sensoriais`    | Tipos de estímulo avaliados: Ruído, Iluminação, Movimento de pessoas      |
+| `usuario_sensibilidades`  | Quais dimensões cada usuário marcou como sensíveis                        |
+| `locais`                  | Locais cadastrados, com coordenadas geográficas (`geometry(Point, 4326)`) |
+| `local_niveis_sensoriais` | Nível de cada dimensão em cada local: `baixo`, `medio` ou `alto`          |
+| `favoritos`               | Locais salvos por cada usuário                                            |
 
 ### Ambiente Docker
 
 O banco de dados utiliza Docker com PostgreSQL 17 e PostGIS 3.5.
 
 **Pré-requisitos:**
+
 - Docker Desktop instalado e em execução.
 
 **Configuração:**
@@ -105,8 +106,7 @@ docker compose exec banco psql -U projeto_dev -d projeto_mobile -f /tmp/03_consu
 docker compose stop
 ```
 
-Os dados são armazenados no volume Docker `dados_postgres` e permanecem salvos após a parada ou reinicialização do container.
----
+## Os dados são armazenados no volume Docker `dados_postgres` e permanecem salvos após a parada ou reinicialização do container.
 
 ## Como rodar o back-end
 
@@ -145,8 +145,8 @@ spring.jpa.show-sql=true
 ```powershell
 cd backend_folder\backend
 
-$env:DB_URL="jdbc:postgresql://localhost:5432/projeto_db"
-$env:DB_USER="postgres"
+$env:DB_URL="jdbc:postgresql://localhost:5433/projeto_mobile"
+$env:DB_USER="projeto_dev"
 $env:DB_PASSWORD="SUA_SENHA"
 
 .\mvnw spring-boot:run
@@ -157,8 +157,8 @@ $env:DB_PASSWORD="SUA_SENHA"
 Crie o arquivo `backend_folder/backend/src/main/resources/application-local.properties`:
 
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/projeto_db
-spring.datasource.username=postgres
+spring.datasource.url=jdbc:postgresql://localhost:5433/projeto_mobile
+spring.datasource.username=projeto_dev
 spring.datasource.password=SUA_SENHA
 ```
 
@@ -207,11 +207,11 @@ Cria um novo usuário.
 
 **Respostas**
 
-| Código | Significado |
-|---|---|
-| `201` | Usuário cadastrado com sucesso |
-| `400` | Nome, e-mail ou senha não preenchidos |
-| `409` | E-mail já cadastrado |
+| Código | Significado                           |
+| ------ | ------------------------------------- |
+| `201`  | Usuário cadastrado com sucesso        |
+| `400`  | Nome, e-mail ou senha não preenchidos |
+| `409`  | E-mail já cadastrado                  |
 
 ### `POST /api/login`
 
@@ -238,9 +238,9 @@ Autentica um usuário.
 
 **Respostas de erro**
 
-| Código | Significado |
-|---|---|
-| `401` | E-mail ou senha inválidos |
+| Código | Significado               |
+| ------ | ------------------------- |
+| `401`  | E-mail ou senha inválidos |
 
 ### Testando pelo PowerShell
 
@@ -298,8 +298,9 @@ backend_folder/backend/src/main/java/com/projeto/backend/
 
 | Luiza | Banco de dados |
 | Jorge | Banco de dados|
-| José  | Back-end |
-| Cauã  | Back-end |
-| Igor  | Front-end|
-| Guilherme  | Front-end|
+| José | Back-end |
+| Cauã | Back-end |
+| Igor | Front-end|
+| Guilherme | Front-end|
+
 ---
