@@ -1,20 +1,19 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import MapaCalmo from './MapaCalmo'
-// [FAVORITOS] tela de favoritos
 import Favoritos from './Favoritos'
 import { cadastrar, login, me, sair, getToken } from './api'
-// [DUPLA] logotipo (o arquivo precisa existir em src/assets/logo.png)
+// logotipo
 import logo from './assets/logo.png'
 
-// [DUPLA] lugares fictícios usados na busca (Av. Caxangá, Recife)
+// lugares fictícios usados na busca (Av. Caxangá, Recife)
 const lugares = [
   { id: 1, nome: 'Restaurante Derby', categoria: 'Restaurante' },
   { id: 2, nome: 'Loja Estilo Caxangá', categoria: 'Loja de roupas' },
   { id: 3, nome: 'Farmácia Drogasil', categoria: 'Farmácia' },
 ]
 
-// [DUPLA] remove acentos e deixa tudo minúsculo, para a busca ignorar os dois
+// remove acentos e deixa tudo minúsculo, para a busca ignorar os dois
 const semAcento = (t) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 
 // [API] Form com envio assíncrono, estado de carregando e mensagem de erro
@@ -59,7 +58,7 @@ function Form({ titulo, campos, botao, voltar, aoEnviar }) {
   )
 }
 
-// [DUPLA] tela de busca com sugestões
+// tela de busca com sugestões
 function Busca() {
   const [texto, setTexto] = useState('')
   const [aberto, setAberto] = useState(false)
@@ -178,15 +177,15 @@ export default function App() {
         {tela === 'menu' && (
           // ORIGINAL: <div className="card">
           <div className="card sem-caixa">
-            {/* [DUPLA] logotipo no menu */}
+            {/* logotipo no menu */}
             <img src={logo} alt="Logo do SensiCare" className="logo-menu" />
             <h1>Menu</h1>
             <p>{usuario ? `Bem-vindo, ${usuario}!` : 'Escolha uma opção para continuar.'}</p>
             {!usuario && <button className="btn" onClick={() => setTela('inicio')}>Início</button>}
             <button className="btn ghost" onClick={() => setTela('mapa')}>Mapa Calmo</button>
-            {/* [FAVORITOS] só aparece para quem está logado */}
+            {/* só aparece para quem está logado */}
             {usuario && <button className="btn ghost" onClick={() => setTela('favoritos')}>Favoritos</button>}
-            {/* [DUPLA] acesso à tela de busca */}
+            {/* acesso à tela de busca */}
             <button className="btn ghost" onClick={() => setTela('busca')}>Buscar lugares</button>
           </div>
         )}
@@ -210,11 +209,11 @@ export default function App() {
         {tela === 'mapa' && (
           <MapaCalmo logado={!!usuario} favoritos={favoritos} alternarFavorito={alternarFavorito} />
         )}
-        {/* [FAVORITOS] tela de favoritos */}
+        {/* tela de favoritos */}
         {tela === 'favoritos' && (
           <Favoritos favoritos={favoritos} remover={alternarFavorito} irMapa={() => setTela('mapa')} />
         )}
-        {/* [DUPLA] tela de busca */}
+        {/* tela de busca */}
         {tela === 'busca' && <Busca />}
       </main>
     </>
