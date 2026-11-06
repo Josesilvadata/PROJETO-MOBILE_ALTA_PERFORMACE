@@ -6,6 +6,14 @@ import 'leaflet/dist/leaflet.css'
 // [API] endereço do back-end (vem da versão com API)
 const API = 'http://localhost:8080'
 
+// ORIGINAL: lista fixa de locais, substituída pelos dados do back-end
+// const LOCAIS = [
+//   { id: 1, nome: 'Café Romã', endereco: 'Rua das Flores, 42', pos: [-8.0632, -34.8712], tags: ['Baixo ruído', 'Luz suave'] },
+//   { id: 2, nome: 'Biblioteca Parque', endereco: 'Alameda Verde, 120', pos: [-8.0556, -34.8815], tags: ['Baixo ruído', 'Sem multidão'] },
+//   { id: 3, nome: 'Parque da Jaqueira', endereco: 'Rua Madre de Deus, s/n', pos: [-8.0366, -34.9027], tags: ['Sem multidão', 'Espaço aberto'] },
+//   { id: 4, nome: 'Jardim da Praça', endereco: 'Av. Conde da Boa Vista, 500', pos: [-8.0585, -34.8890], tags: ['Luz suave', 'Espaço aberto'] },
+// ]
+
 const FILTROS = ['Baixo ruído', 'Luz suave', 'Sem multidão', 'Espaço aberto']
 const CENTRO_RECIFE = [-8.0476, -34.877]
 
@@ -37,7 +45,9 @@ function Foco({ alvo }) {
   return null
 }
 
-export default function MapaCalmo() {
+// ORIGINAL: export default function MapaCalmo() {
+// [FAVORITOS] recebe do App: se há usuário logado, a lista de favoritos e a função de marcar/desmarcar
+export default function MapaCalmo({ logado = false, favoritos = [], alternarFavorito }) {
   const [busca, setBusca] = useState('')
   const [ativos, setAtivos] = useState([])
   const [minhaPos, setMinhaPos] = useState(CENTRO_RECIFE)
@@ -174,6 +184,15 @@ export default function MapaCalmo() {
               <button className="btn ghost" onClick={() => setAlvo({ pos: l.pos })}>
                 Ver no mapa
               </button>
+              {/* [FAVORITOS] só aparece para quem está logado; fica preenchido se já é favorito */}
+              {logado && (
+                <button
+                  className={'btn' + (favoritos.some((f) => f.id === l.id) ? '' : ' ghost')}
+                  onClick={() => alternarFavorito(l)}
+                >
+                  {favoritos.some((f) => f.id === l.id) ? '♥ Favoritado' : '♡ Favoritar'}
+                </button>
+              )}
             </article>
           ))}
         </aside>

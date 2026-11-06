@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import MapaCalmo from './MapaCalmo'
+// [FAVORITOS] tela de favoritos
+import Favoritos from './Favoritos'
 import { cadastrar, login, me, sair, getToken } from './api'
-// logotipo
+// [DUPLA] logotipo (o arquivo precisa existir em src/assets/logo.png)
 import logo from './assets/logo.png'
 
 // [DUPLA] lugares fictícios usados na busca (Av. Caxangá, Recife)
@@ -98,6 +100,36 @@ export default function App() {
   const [usuario, setUsuario] = useState(null)
   const voltar = () => setTela('inicio')
 
+  // [FAVORITOS] lista de favoritos do usuário logado (guardada no navegador por enquanto)
+  const [favoritos, setFavoritos] = useState([])
+
+  // [FAVORITOS] quando o usuário muda (login/logout), carrega a lista dele
+  useEffect(() => {
+    if (!usuario) {
+      setFavoritos([])
+      return
+    }
+    try {
+      setFavoritos(JSON.parse(localStorage.getItem('favoritos:' + usuario)) || [])
+    } catch {
+      setFavoritos([])
+    }
+  }, [usuario])
+
+  // [FAVORITOS] marca ou desmarca um local e salva a lista
+  const alternarFavorito = ({ id, nome, descricao, endereco, pos, tags }) => {
+    const local = { id, nome, descricao, endereco, pos, tags }
+    const novo = favoritos.some((f) => f.id === id)
+      ? favoritos.filter((f) => f.id !== id)
+      : [...favoritos, local]
+    setFavoritos(novo)
+    try {
+      localStorage.setItem('favoritos:' + usuario, JSON.stringify(novo))
+    } catch {
+      // se o navegador bloquear o armazenamento, a lista vale só até recarregar
+    }
+  }
+
   // [API] ao abrir o site, se já há token, confirma com o back-end quem é o usuário
   useEffect(() => {
     if (getToken()) {
@@ -152,6 +184,8 @@ export default function App() {
             <p>{usuario ? `Bem-vindo, ${usuario}!` : 'Escolha uma opção para continuar.'}</p>
             {!usuario && <button className="btn" onClick={() => setTela('inicio')}>Início</button>}
             <button className="btn ghost" onClick={() => setTela('mapa')}>Mapa Calmo</button>
+            {/* [FAVORITOS] só aparece para quem está logado */}
+            {usuario && <button className="btn ghost" onClick={() => setTela('favoritos')}>Favoritos</button>}
             {/* [DUPLA] acesso à tela de busca */}
             <button className="btn ghost" onClick={() => setTela('busca')}>Buscar lugares</button>
           </div>
@@ -172,7 +206,14 @@ export default function App() {
           <Form titulo="Cadastro" botao="Cadastrar" voltar={voltar} aoEnviar={fazerCadastro}
             campos={[['Nome', 'text', 'nome'], ['E-mail', 'email', 'email'], ['Senha', 'password', 'senha']]} />
         )}
-        {tela === 'mapa' && <MapaCalmo />}
+        {/* ORIGINAL: {tela === 'mapa' && <MapaCalmo />} */}
+        {tela === 'mapa' && (
+          <MapaCalmo logado={!!usuario} favoritos={favoritos} alternarFavorito={alternarFavorito} />
+        )}
+        {/* [FAVORITOS] tela de favoritos */}
+        {tela === 'favoritos' && (
+          <Favoritos favoritos={favoritos} remover={alternarFavorito} irMapa={() => setTela('mapa')} />
+        )}
         {/* [DUPLA] tela de busca */}
         {tela === 'busca' && <Busca />}
       </main>

@@ -60,7 +60,7 @@ input:focus { outline: none; border-color: var(--blue); }
 .mapa-conteudo { display: grid; grid-template-columns: 1fr 320px; gap: 16px; align-items: start; }
 .lista { display: flex; flex-direction: column; gap: 12px; max-height: 560px; overflow-y: auto; }
 .lista-info { font-size: 0.85rem; }
-/* ORIGINAL (com "}" sobrando e sem fechar o estilo):
+/* ORIGINAL (do colega, com "}" sobrando e sem fechar o estilo):
 .lugar-card { display: flex; flex-direction: column; gap: 8px; background: var(--soft); border: 1px solid var(--line)}; */
 .lugar-card { display: flex; flex-direction: column; gap: 8px; background: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 14px; text-align: left; } /* [ajuste] */
 .lugar-topo { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; } /* [ajuste] */
@@ -74,3 +74,8 @@ input:focus { outline: none; border-color: var(--blue); }
   .mapa-conteudo { grid-template-columns: 1fr; }
   .lista { max-height: none; }
 }
+
+/* ---------- Favoritos ---------- */
+.favoritos-page { width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.favoritos-page h1 { color: var(--blue); }
+.lista-favoritos { width: 100%; display: flex; flex-direction: column; gap: 12px; }
