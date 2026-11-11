@@ -1,6 +1,5 @@
 BEGIN;
 
--- Garante que as três dimensões sensoriais existam.
 INSERT INTO public.dimensoes_sensoriais (nome, descricao)
 VALUES
     ('Ruído', 'Nível de ruído percebido no local'),
@@ -8,8 +7,6 @@ VALUES
     ('Movimento de pessoas', 'Intensidade do movimento de pessoas')
 ON CONFLICT (nome) DO NOTHING;
 
--- Gera uma avaliação para cada combinação de local e dimensão.
--- A distribuição é determinística e serve apenas para demonstração.
 WITH avaliacoes_demo AS (
     SELECT
         l.id AS local_id,
@@ -30,7 +27,6 @@ ON CONFLICT (local_id, dimensao_id) DO NOTHING;
 
 COMMIT;
 
--- Conferência: cada local deve ter 3 avaliações (uma por dimensão).
 SELECT
     COUNT(*) AS total_locais,
     COUNT(*) FILTER (WHERE avaliacoes = 3) AS locais_completos,
