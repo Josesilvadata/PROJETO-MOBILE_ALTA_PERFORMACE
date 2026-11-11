@@ -1,3 +1,4 @@
+
 CREATE EXTENSION IF NOT EXISTS postgis;
 
 CREATE TABLE IF NOT EXISTS usuarios (
@@ -27,11 +28,19 @@ CREATE TABLE IF NOT EXISTS locais (
     nome VARCHAR(150) NOT NULL,
     descricao TEXT,
     localizacao geometry(Point, 4326) NOT NULL,
-    criado_em TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    criado_em TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    categoria VARCHAR(80),
+    origem VARCHAR(30) NOT NULL DEFAULT 'PREFEITURA_RECIFE',
+    osm_id BIGINT,
+    osm_tipo VARCHAR(15)
 );
 
 CREATE INDEX IF NOT EXISTS idx_locais_localizacao
     ON locais USING GIST (localizacao);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_locais_osm_unico
+    ON locais (osm_tipo, osm_id)
+    WHERE osm_id IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS local_niveis_sensoriais (
     local_id BIGINT NOT NULL
