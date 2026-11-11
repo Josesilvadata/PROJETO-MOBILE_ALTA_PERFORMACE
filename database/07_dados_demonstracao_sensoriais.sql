@@ -1,5 +1,6 @@
 BEGIN;
 
+-- Garante que as três dimensões sensoriais existam.
 INSERT INTO public.dimensoes_sensoriais (nome, descricao)
 VALUES
     ('Ruído', 'Nível de ruído percebido no local'),
@@ -7,19 +8,9 @@ VALUES
     ('Movimento de pessoas', 'Intensidade do movimento de pessoas')
 ON CONFLICT (nome) DO NOTHING;
 
-
-WITH primeiros_locais AS (
-    SELECT id
-    FROM public.locais
-    ORDER BY id
-    LIMIT 30
-),
-dimensoes AS (
-    SELECT id
-    FROM public.dimensoes_sensoriais
-    WHERE nome IN ('Ruído', 'Iluminação', 'Movimento de pessoas')
-),
-avaliacoes_demo AS (
+-- Gera uma avaliação para cada combinação de local e dimensão.
+-- A distribuição é determinística e serve apenas para demonstração.
+WITH avaliacoes_demo AS (
     SELECT
         l.id AS local_id,
         d.id AS dimensao_id,
@@ -28,8 +19,9 @@ avaliacoes_demo AS (
             WHEN 1 THEN 'medio'
             ELSE 'alto'
         END AS nivel
-    FROM primeiros_locais l
-    CROSS JOIN dimensoes d
+    FROM public.locais AS l
+    CROSS JOIN public.dimensoes_sensoriais AS d
+    WHERE d.nome IN ('Ruído', 'Iluminação', 'Movimento de pessoas')
 )
 INSERT INTO public.local_niveis_sensoriais (local_id, dimensao_id, nivel)
 SELECT local_id, dimensao_id, nivel
@@ -38,13 +30,22 @@ ON CONFLICT (local_id, dimensao_id) DO NOTHING;
 
 COMMIT;
 
+-- Conferência: cada local deve ter 3 avaliações (uma por dimensão).
 SELECT
-    COUNT(*) AS total_avaliacoes_sensoriais,
-    COUNT(DISTINCT local_id) AS locais_com_avaliacoes
-FROM public.local_niveis_sensoriais
-WHERE local_id IN (
-    SELECT id
-    FROM public.locais
-    ORDER BY id
-    LIMIT 30
-);
+    COUNT(*) AS total_locais,
+    COUNT(*) FILTER (WHERE avaliacoes = 3) AS locais_completos,
+    COUNT(*) FILTER (WHERE avaliacoes < 3) AS locais_incompletos,
+    SUM(avaliacoes) AS total_avaliacoes
+FROM (
+    SELECT
+        l.id,
+        COUNT(ln.dimensao_id) AS avaliacoes
+    FROM public.locais AS l
+    LEFT JOIN public.local_niveis_sensoriais AS ln
+        ON ln.local_id = l.id
+    LEFT JOIN public.dimensoes_sensoriais AS d
+        ON d.id = ln.dimensao_id
+       AND d.nome IN ('Ruído', 'Iluminação', 'Movimento de pessoas')
+    GROUP BY l.id
+) AS resumo;
+

@@ -1,9 +1,3 @@
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 17.5 (Debian 17.5-1.pgdg110+1)
--- Dumped by pg_dump version 17.5 (Debian 17.5-1.pgdg110+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -17,9 +11,6 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- Data for Name: locais; Type: TABLE DATA; Schema: public; Owner: -
---
 
 COPY public.locais (id, nome, descricao, localizacao, criado_em, categoria, origem, osm_id, osm_tipo) FROM stdin;
 4	Academia Da Cidade	Area Verde ? Avenida Gov Agamenon Magalhaes ? Torreao	0101000020E61000001A074D011F7141C0FE8F32334A1520C0	2026-11-10 18:28:14.788169+00	\N	PREFEITURA_RECIFE	\N	\N
@@ -726,14 +717,5 @@ COPY public.locais (id, nome, descricao, localizacao, criado_em, categoria, orig
 \.
 
 
---
--- Name: locais_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
 
 SELECT pg_catalog.setval('public.locais_id_seq', 704, true);
-
-
---
--- PostgreSQL database dump complete
---
-

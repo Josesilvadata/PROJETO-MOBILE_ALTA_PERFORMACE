@@ -1,4 +1,3 @@
-
 INSERT INTO dimensoes_sensoriais (nome, descricao)
 VALUES
     ('Ruído', 'Nível de ruído percebido no local'),
