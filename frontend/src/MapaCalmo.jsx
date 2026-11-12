@@ -17,12 +17,22 @@ const API = 'http://localhost:8080'
 const FILTROS = ['Baixo ruído', 'Luz suave', 'Sem multidão', 'Espaço aberto']
 const CENTRO_RECIFE = [-8.0476, -34.877]
 
-const icone = (nome) =>
-  L.divIcon({
-    className: 'pin',
-    html: `<span class="pin-label">${nome}</span><span class="pin-dot"></span>`,
-    iconSize: [0, 0],
-  })
+// ORIGINAL: ícone com o nome do local escrito no mapa (gerava os "borrões")
+// const icone = (nome) =>
+//   L.divIcon({
+//     className: 'pin',
+//     html: `<span class="pin-label">${nome}</span><span class="pin-dot"></span>`,
+//     iconSize: [0, 0],
+//   })
+
+// ícone 📍 único, reaproveitado por todos os locais (sem texto, bem mais leve)
+const ICONE_PIN = L.divIcon({
+  className: 'pin-emoji',
+  html: '📍',
+  iconSize: [24, 24],
+  iconAnchor: [12, 24],   // a ponta do pin fica sobre a coordenada
+  popupAnchor: [0, -24],  // o popup abre acima do pin
+})
 
 // Distância em km entre dois pontos [lat, lon] (fórmula de Haversine)
 function distanciaKm([lat1, lon1], [lat2, lon2]) {
@@ -147,7 +157,8 @@ export default function MapaCalmo({ logado = false, favoritos = [], alternarFavo
               </CircleMarker>
             )}
             {visiveis.map((l) => (
-              <Marker key={l.id} position={l.pos} icon={icone(l.nome)}>
+              // ORIGINAL: <Marker key={l.id} position={l.pos} icon={icone(l.nome)}>
+              <Marker key={l.id} position={l.pos} icon={ICONE_PIN}>
                 <Popup>
                   <strong>{l.nome}</strong>
                   <br />
