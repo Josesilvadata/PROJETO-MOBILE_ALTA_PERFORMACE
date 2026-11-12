@@ -83,30 +83,44 @@ docker compose up -d
 docker compose ps
 ```
 
-**Executar os scripts SQL pela primeira vez:**
+### Inicialização automática do banco
 
-```bash
-docker compose cp database/01_schema.sql banco:/tmp/01_schema.sql
-docker compose exec banco psql -U projeto_dev -d projeto_mobile -f /tmp/01_schema.sql
+O Docker Compose está configurado para executar automaticamente os scripts SQL quando um banco de dados é criado pela primeira vez, em um volume vazio.
 
-docker compose cp database/02_dados_iniciais.sql banco:/tmp/02_dados_iniciais.sql
-docker compose exec banco psql -U projeto_dev -d projeto_mobile -f /tmp/02_dados_iniciais.sql
+A ordem de execução é:
+
+1. `01_schema.sql` — criação das tabelas e estruturas do banco.
+2. `02_dados_iniciais.sql` — cadastro das dimensões sensoriais iniciais.
+3. `04_importar_locais.sql` — importação dos locais de Recife.
+4. `07_dados_demonstracao_sensoriais.sql` — criação de níveis sensoriais demonstrativos para os locais.
+
+Os dados demonstrativos incluem três dimensões sensoriais por local: ruído, iluminação e movimento de pessoas. Esses níveis são fictícios e servem para demonstração, não representam medições reais.
+
+**Importante:** os scripts de inicialização automática são executados somente quando o PostgreSQL inicializa um volume de dados vazio. Se o banco já existir, executar `docker compose up -d` não executará os scripts novamente.
+
+### Verificar os dados
+
+Para conferir a quantidade de locais:
+
+```powershell
+docker compose exec banco psql -U projeto_dev -d projeto_mobile -c "SELECT COUNT(*) FROM locais;"
 ```
 
-**Executar consultas de teste:**
+Para conferir as avaliações sensoriais:
 
-```bash
-docker compose cp database/03_consultas_teste.sql banco:/tmp/03_consultas_teste.sql
-docker compose exec banco psql -U projeto_dev -d projeto_mobile -f /tmp/03_consultas_teste.sql
+```powershell
+docker compose exec banco psql -U projeto_dev -d projeto_mobile -c "SELECT COUNT(*) FROM local_niveis_sensoriais;"
 ```
 
-**Parar o banco:**
+### Parar o banco
 
-```bash
+```powershell
 docker compose stop
 ```
 
-## Os dados são armazenados no volume Docker `dados_postgres` e permanecem salvos após a parada ou reinicialização do container.
+Os dados ficam armazenados no volume Docker `dados_postgres` e permanecem salvos após a parada ou reinicialização do container.
+
+**Atenção:** não utilize `docker compose down -v` para parar o projeto, pois esse comando remove o volume e pode apagar os dados.
 
 ## Como rodar o back-end
 
