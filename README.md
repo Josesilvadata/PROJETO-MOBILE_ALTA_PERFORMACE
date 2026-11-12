@@ -131,75 +131,74 @@ Os dados ficam armazenados no volume Docker `dados_postgres` e permanecem salvos
 - PostGIS instalado (necessário para a tabela `locais`; o cadastro e o login funcionam mesmo sem ele)
 - VS Code, IntelliJ ou outra IDE de sua preferência
 
-### 1. Criar o banco
+### 1. Iniciar o banco e o back-end
 
-No pgAdmin (ou no `psql`), crie um banco chamado `projeto_db` e execute nele os scripts da pasta `database/`, na ordem: criação das tabelas e depois os dados iniciais.
+Na pasta raiz do projeto, execute:
 
-Para conferir:
-
-```sql
-SELECT id, nome, email FROM usuarios;
+```powershell
+.\rodar.ps1
 ```
 
-### 2. Configurar as credenciais
+Esse script inicia o banco pelo Docker Compose e executa o back-end Spring Boot.
 
-A senha do banco **não deve ficar escrita no código**. O `application.properties` lê os dados de variáveis de ambiente:
+Se o PowerShell bloquear a execução do script, utilize:
 
-```properties
-spring.datasource.url=${DB_URL}
-spring.datasource.username=${DB_USER}
-spring.datasource.password=${DB_PASSWORD}
-
-spring.jpa.hibernate.ddl-auto=none
-spring.jpa.show-sql=true
+```powershell
+powershell -ExecutionPolicy Bypass -File .\rodar.ps1
 ```
 
-**Opção A: variáveis de ambiente (PowerShell)**
+### 2. Configuração manual do back-end
+
+Caso prefira iniciar o back-end manualmente, configure as variáveis de ambiente no PowerShell:
+
+```powershell
+$env:DB_URL = "jdbc:postgresql://localhost:5433/projeto_mobile"
+$env:DB_USER = "projeto_dev"
+$env:DB_PASSWORD = "SUA_SENHA_LOCAL"
+```
+
+A senha deve ser a mesma configurada no arquivo `.env`, mas não deve ser publicada no GitHub.
+
+Em seguida:
 
 ```powershell
 cd backend_folder\backend
-
-$env:DB_URL="jdbc:postgresql://localhost:5433/projeto_mobile"
-$env:DB_USER="projeto_dev"
-$env:DB_PASSWORD="SUA_SENHA"
-
 .\mvnw spring-boot:run
 ```
 
-**Opção B: perfil local**
+O back-end utiliza Java 17 ou superior e Maven Wrapper, que já está incluído no projeto.
 
-Crie o arquivo `backend_folder/backend/src/main/resources/application-local.properties`:
+### 3. Executar o front-end
 
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5433/projeto_mobile
-spring.datasource.username=projeto_dev
-spring.datasource.password=SUA_SENHA
-```
-
-Esse arquivo **não pode ir para o Git**. Confirme que o `.gitignore` contém:
-
-```
-backend_folder/backend/src/main/resources/application-local.properties
-```
-
-Depois rode:
+O script `rodar.ps1` não inicia o front-end. Para executá-lo, abra outro terminal e rode:
 
 ```powershell
-cd backend_folder\backend
-.\mvnw spring-boot:run "-Dspring-boot.run.profiles=local"
+cd frontend
+npm install
+npm run dev
 ```
 
-### 3. Confirmar que subiu
+O Vite normalmente disponibiliza a aplicação em:
 
-No fim do log deve aparecer:
-
-```
-Started BackendApplication in X seconds
+```text
+http://localhost:5173
 ```
 
-A API fica disponível em `http://localhost:8080`.
+A API do back-end fica disponível em:
 
----
+```text
+http://localhost:8080
+```
+
+### 4. Confirmar a conexão com o banco
+
+Com o banco em execução, utilize:
+
+```powershell
+docker compose ps
+```
+
+O serviço `banco` deve aparecer como saudável (`healthy`).
 
 ## Endpoints da API
 
