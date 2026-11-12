@@ -182,11 +182,11 @@ export default function App() {
             <h1>Menu</h1>
             <p>{usuario ? `Bem-vindo, ${usuario}!` : 'Escolha uma opção para continuar.'}</p>
             {!usuario && <button className="btn" onClick={() => setTela('inicio')}>Início</button>}
-            <button className="btn ghost" onClick={() => setTela('mapa')}>Mapa Calmo</button>
-            {/* só aparece para quem está logado */}
+            {/* só aparecem para quem está logado */}
+            {usuario && <button className="btn ghost" onClick={() => setTela('mapa')}>Mapa Calmo</button>}
             {usuario && <button className="btn ghost" onClick={() => setTela('favoritos')}>Favoritos</button>}
             {/* acesso à tela de busca */}
-            <button className="btn ghost" onClick={() => setTela('busca')}>Buscar lugares</button>
+            {usuario && <button className="btn ghost" onClick={() => setTela('busca')}>Buscar lugares</button>}
           </div>
         )}
         {tela === 'inicio' && (
