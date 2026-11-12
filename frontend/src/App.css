@@ -35,10 +35,13 @@ input:focus { outline: none; border-color: var(--blue); }
 .mapa { height: 560px; width: 100%; }
 .mapa-vazio { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 1000; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 8px 18px; font-weight: 600; }
 
-/* marcadores (pino com nome) */
+/* marcadores (pino 📍) */
+/* ORIGINAL (pino com nome escrito, gerava os "borrões"):
 .pin { background: none; border: 0; }
 .pin-label { position: absolute; left: 0; bottom: 14px; transform: translateX(-50%); white-space: nowrap; background: var(--blue); color: #fff; font: 700 0.85rem "Segoe UI", Arial, sans-serif; padding: 6px 12px; border-radius: 999px; box-shadow: 0 2px 6px rgba(18, 48, 63, 0.25); }
 .pin-dot { position: absolute; left: 0; top: 0; width: 14px; height: 14px; transform: translate(-50%, -50%); background: #fff; border: 3px solid var(--blue); border-radius: 50%; }
+*/
+.pin-emoji { background: none; border: none; font-size: 22px; line-height: 24px; text-align: center; cursor: pointer; }
 .leaflet-popup-content { font-family: "Segoe UI", Arial, sans-serif; color: #12303f; line-height: 1.5; }
 
 @media (max-width: 700px) {
